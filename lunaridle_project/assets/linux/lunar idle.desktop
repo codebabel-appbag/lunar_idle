@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=lunar_idle
+Comment=lunar idle application
+Exec=
+Terminal=false
+StartupNotify=true
+PrefersNonDefaultGPU=false
+Icon=
