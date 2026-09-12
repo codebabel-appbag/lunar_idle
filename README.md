@@ -60,6 +60,9 @@ Full documentation lives in the `docs/` folder:
 - `docs/ROADMAP.md` [ROADMAP.md](https://github.com/codebabel-appbag/lunar_idle/blob/main/lunaridle_project/source/docs/ROADMAP.md) — planned features and i18n notes.
 - `docs/USERMANUAL.md` [USERMANUAL.md](https://github.com/codebabel-appbag/lunar_idle/blob/main/lunaridle_project/source/docs/USERMANUAL.md) — easy user manual.
 
+## Project code
+- `code/` [code/](https://github.com/codebabel-appbag/lunar_idle/tree/main/lunaridle_project/source/code) — project code.
+
 ## Installation
 
     git clone https://github.com/codebabel-appbag/lua/lunar_idle.git
