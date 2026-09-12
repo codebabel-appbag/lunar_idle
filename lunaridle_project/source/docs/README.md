@@ -63,6 +63,11 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 python3 main.py
 ```
+## User manual
+- `docs/USERMANUAL.md` [USERMANUAL.md](https://github.com/codebabel-appbag/lunar_idle/blob/main/lunaridle_project/source/docs/USERMANUAL.md) — easy user manual.
+
+- `docs/USERMANUAL.pdf` [USERMANUAL.pdf](https://github.com/codebabel-appbag/lunar_idle/blob/main/lunaridle_project/source/docs/USERMANUAL.pdf) — easy user manual.
+
 ## License
 
 MIT © codebabel
