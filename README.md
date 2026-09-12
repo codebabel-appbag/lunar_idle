@@ -54,10 +54,10 @@ Because Lua deserves a small, friendly entry point — the same way Python has I
 ## Documentation
 
 Full documentation lives in the `docs/` folder:
-
-- `docs/SKILL.md` — what the app can and cannot do (`main.py` and `repl.py` in detail).
-- `docs/CHANGELOG.md` — history of changes.
-- `docs/ROADMAP.md` — planned features and i18n notes.
+- `docs/` [docs/](https://github.com/codebabel-appbag/lunar_idle/tree/main/lunaridle_project/source/docs)
+- `docs/SKILL.md` [SKILL.md](https://github.com/codebabel-appbag/lunar_idle/blob/main/lunaridle_project/source/docs/SKILL.md) — what the app can and cannot do (`main.py` and `repl.py` in detail).
+- `docs/CHANGELOG.md` [CHANGELOG.md](https://github.com/codebabel-appbag/lunar_idle/blob/main/lunaridle_project/source/docs/CHANGELOG.md) — history of changes.
+- `docs/ROADMAP.md` [ROADMAP.md](https://github.com/codebabel-appbag/lunar_idle/blob/main/lunaridle_project/source/docs/ROADMAP.md) — planned features and i18n notes.
 
 ## Installation
 
