@@ -61,7 +61,7 @@ Full documentation lives in the `docs/` folder:
 - `docs/USERMANUAL.md` [USERMANUAL.md](https://github.com/codebabel-appbag/lunar_idle/blob/main/lunaridle_project/source/docs/USERMANUAL.md) — easy user manual.
 
 ## Project code
-- `code/` [code/](https://github.com/codebabel-appbag/lunar_idle/tree/main/lunaridle_project/source/code) — project code.
+- `code/` [https://github.com/codebabel-appbag/lunar_idle/tree/main/lunaridle_project/source/code](https://github.com/codebabel-appbag/lunar_idle/tree/main/lunaridle_project/source/code) — project code.
 
 ## Installation
 
