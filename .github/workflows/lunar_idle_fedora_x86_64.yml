@@ -12,7 +12,7 @@ permissions:
 jobs:
   build-fedora:
     name: Build for Fedora (x86_64)
-    runs-on: ubuntu-latest
+    runs-on: fedora-latest
 
     steps:
       - name: Checkout repository
