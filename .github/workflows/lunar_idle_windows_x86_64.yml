@@ -27,31 +27,22 @@ jobs:
           python -m PyInstaller lunaridle_project/build/lunar_idle.spec --distpath dist --workpath build
 
       - name: Organize Artifacts
-        shell: bash
+        shell: pwsh
         run: |
-          TARGET_DIR="lunaridle_project/workflow/windows"
-          mkdir -p "$TARGET_DIR"
+          $targetDir = "lunaridle_project/workflow/windows"
+          New-Item -ItemType Directory -Force -Path $targetDir
           
-          echo "Conteúdo da raiz do repositório:"
-          ls -la
-          
-          if [ -d "dist" ]; then
-            echo "Conteúdo da pasta dist:"
-            ls -la dist/
-          else
-            echo "Aviso: A pasta dist não existe!"
-          fi
+          Write-Host "Conteúdo da pasta dist:"
+          Get-ChildItem -Path "dist"
 
-          FOUND_EXE=$(find . -type f -name "*.exe")
-          
-          if [ -n "$FOUND_EXE" ]; then
-            echo "Executável encontrado: $FOUND_EXE"
-            cp "$FOUND_EXE" "$TARGET_DIR/lunar_idle_x86_64.exe"
-            ls -la "$TARGET_DIR"
-          else
-            echo "Erro crítico: Nenhum arquivo .exe foi gerado pelo PyInstaller."
+          if (Test-Path "dist/lunar_idle.exe") {
+            Copy-Item -Path "dist/lunar_idle.exe" -Destination "$targetDir/lunar_idle_x86_64.exe" -Force
+            Write-Host "Copiado com sucesso para $targetDir/lunar_idle_x86_64.exe"
+            Get-ChildItem -Path $targetDir
+          } else {
+            Write-Error "Erro crítico: dist/lunar_idle.exe não foi encontrado."
             exit 1
-          fi
+          }
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
