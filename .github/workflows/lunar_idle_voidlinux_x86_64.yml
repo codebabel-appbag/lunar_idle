@@ -1,4 +1,4 @@
-name: lunar_idle_archlinux(x86_64)
+name: lunar_idle_archlinux(x86_64:v3)
 
 on:
   push:
@@ -22,6 +22,7 @@ jobs:
     steps:
       - name: Install system dependencies
         run: |
+          export SSL_NO_VERIFY_PEER=1
           xbps-install -Syu --yes git python3 python3-pip base-devel
 
       - name: Mark workspace safe for git
