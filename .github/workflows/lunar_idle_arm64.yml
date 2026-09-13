@@ -1,0 +1,68 @@
+name: Build Lunar IDE macOS(arm64)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos-arm64:
+    name: Build for macOS (arm64)
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.3'
+          cache: ''
+
+      - name: Build macOS arm64
+        run: |
+          pip install customtkinter pyinstaller
+          python3 -m PyInstaller lunaridle_project/build/lunar_idle.spec --distpath dist --workpath build
+
+      - name: Organize Artifacts
+        run: |
+          TARGET_DIR="lunaridle_project/workflow/macos"
+          mkdir -p "$TARGET_DIR"
+          
+          # Remove versão anterior se existir para evitar conflitos no commit
+          rm -rf "$TARGET_DIR/lunar_idle_arm64.app"
+
+          if [ -d "dist/lunar_idle.app" ]; then
+            mv "dist/lunar_idle.app" "$TARGET_DIR/lunar_idle_arm64.app"
+            echo "App movido com sucesso para $TARGET_DIR/lunar_idle_arm64.app"
+          elif [ -f "dist/lunar_idle" ]; then
+            # Caso o PyInstaller gere como binário simples
+            cp "dist/lunar_idle" "$TARGET_DIR/lunar_idle_arm64"
+            chmod +x "$TARGET_DIR/lunar_idle_arm64"
+            echo "Binário copiado para $TARGET_DIR/lunar_idle_arm64"
+          else
+            echo "Erro crítico: Saída do build não encontrada na pasta dist."
+            exit 1
+          fi
+
+      - name: Commit and Push Binary
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add lunaridle_project/workflow/macos/
+          git status
+          
+          GIT_STATUS=$(git status --porcelain)
+          if [ -n "$GIT_STATUS" ]; then
+            git commit -m "chore: update automated macos arm64 build artifact [skip ci]"
+            git push
+            echo "Artefato do macOS ARM64 enviado com sucesso para o repositório!"
+          else
+            echo "Nenhuma alteração detectada para commit."
+          fi
