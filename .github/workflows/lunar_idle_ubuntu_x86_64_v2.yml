@@ -1,4 +1,4 @@
-name: lunar_idle ubuntu(x86_64)
+name: lunar_idle ubuntu(x86_64:v2)
 
 on:
   push:
