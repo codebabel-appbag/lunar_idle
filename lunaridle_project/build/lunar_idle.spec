@@ -1,28 +1,41 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-block_cipher = None
+import sys
+import os
+
+# Caminho base do projeto considerando que o spec está em lunaridle_project/build/
+PROJECT_ROOT = os.path.abspath(os.path.join(SPECPATH, '..'))
+
+# Configuração de ícones baseada no sistema operacional atual do build
+icon_path = None
+version_file_path = None
+
+if sys.platform == 'win32':
+    icon_path = os.path.join(PROJECT_ROOT, 'assets', 'windows', 'icon.ico')
+    version_file_path = os.path.join(PROJECT_ROOT, 'build', 'version.txt')
+elif sys.platform == 'darwin':
+    icon_path = os.path.join(PROJECT_ROOT, 'assets', 'macos', 'icon.icns')
 
 a = Analysis(
-    ['main.py'],
-    pathex=[],
+    [os.path.join(PROJECT_ROOT, 'source', 'code', 'python', 'main.py')],
+    pathex=[PROJECT_ROOT],
     binaries=[],
     datas=[],
-    hiddenimports=['customtkinter'],
+    hiddenimports=[],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    cipher=block_cipher,
     noarchive=False,
+    optimize=0,
 )
 
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(a.pure, a.zipped_data)
 
 exe = EXE(
     pyz,
     a.scripts,
     a.binaries,
-    a.zipfiles,
     a.datas,
     [],
     name='lunar_idle',
@@ -38,5 +51,14 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='icon.ico',
+    icon=icon_path,
+    version=version_file_path if sys.platform == 'win32' else None,
 )
+
+if sys.platform == 'darwin':
+    app = BUNDLE(
+        exe,
+        name='lunar_idle.app',
+        icon=icon_path,
+        bundle_identifier='com.minguantecossys.lunaride',
+    )
