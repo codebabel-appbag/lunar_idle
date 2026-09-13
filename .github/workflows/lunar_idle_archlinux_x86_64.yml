@@ -12,7 +12,7 @@ permissions:
 jobs:
   build-archlinux:
     name: Build for Arch Linux (x86_64)
-    runs-on: ubuntu-latest
+    runs-on: archlinux-latest
 
     steps:
       - name: Checkout repository
