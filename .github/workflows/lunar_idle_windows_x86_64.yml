@@ -1,4 +1,4 @@
-name: Build Lunar IDE for Windows
+name: Build Lunar IDE for Windows(x86_64)
 
 on:
   push:
