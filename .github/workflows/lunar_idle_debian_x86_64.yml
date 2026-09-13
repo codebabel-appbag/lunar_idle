@@ -1,4 +1,4 @@
-name: lunar_idle debian(x86_64)
+name: lunar_idle debian(x86_64:z)
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
 jobs:
   build-debian:
     name: Build for Debian (x86_64)
-    runs-on: ubuntu-latest
+    runs-on: debian-latest
 
     steps:
       - name: Checkout repository
