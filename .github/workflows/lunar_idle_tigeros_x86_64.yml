@@ -12,7 +12,7 @@ permissions:
 jobs:
   build-tigeros:
     name: Build for TigerOS (x86_64)
-    runs-on: ubuntu-latest
+    runs-on: tigeros-latest
 
     steps:
       - name: Checkout repository
