@@ -1,1 +1,0 @@
-pyinstaller --windowed --osx-bundle-identifier="com.minguantecossys.lunaride" --icon=assets/icon.icns main.py
