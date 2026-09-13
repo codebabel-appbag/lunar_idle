@@ -1,4 +1,4 @@
-name: Build Lunar IDE for Windows(x86_64)
+name: Build Lunar IDE for Windows
 
 on:
   push:
@@ -24,14 +24,34 @@ jobs:
       - name: Build Windows x86_64
         run: |
           pip install customtkinter pyinstaller
-          pyinstaller lunaridle_project/build/lunar_idle.spec
+          python -m PyInstaller lunaridle_project/build/lunar_idle.spec --distpath dist --workpath build
 
       - name: Organize Artifacts
         shell: bash
         run: |
           TARGET_DIR="lunaridle_project/workflow/windows"
           mkdir -p "$TARGET_DIR"
-          mv dist/lunar_idle.exe "$TARGET_DIR/lunar_idle_x86_64.exe"
+          
+          echo "Conteúdo da raiz do repositório:"
+          ls -la
+          
+          if [ -d "dist" ]; then
+            echo "Conteúdo da pasta dist:"
+            ls -la dist/
+          else
+            echo "Aviso: A pasta dist não existe!"
+          fi
+
+          FOUND_EXE=$(find . -type f -name "*.exe")
+          
+          if [ -n "$FOUND_EXE" ]; then
+            echo "Executável encontrado: $FOUND_EXE"
+            cp "$FOUND_EXE" "$TARGET_DIR/lunar_idle_x86_64.exe"
+            ls -la "$TARGET_DIR"
+          else
+            echo "Erro crítico: Nenhum arquivo .exe foi gerado pelo PyInstaller."
+            exit 1
+          fi
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
