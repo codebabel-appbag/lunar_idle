@@ -1,10 +1,13 @@
-name: Build Lunar IDE for Windows(x86_64)
+name: Build Lunar IDE for Windows(x86_64:v4)
 
 on:
   push:
     tags:
       - 'v*'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build-windows:
@@ -32,20 +35,29 @@ jobs:
           $targetDir = "lunaridle_project/workflow/windows"
           New-Item -ItemType Directory -Force -Path $targetDir
           
-          Write-Host "Conteúdo da pasta dist:"
-          Get-ChildItem -Path "dist"
-
           if (Test-Path "dist/lunar_idle.exe") {
             Copy-Item -Path "dist/lunar_idle.exe" -Destination "$targetDir/lunar_idle_x86_64.exe" -Force
             Write-Host "Copiado com sucesso para $targetDir/lunar_idle_x86_64.exe"
-            Get-ChildItem -Path $targetDir
           } else {
             Write-Error "Erro crítico: dist/lunar_idle.exe não foi encontrado."
             exit 1
           }
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: lunar-ide-windows-x86_64
-          path: lunaridle_project/workflow/windows/
+      - name: Commit and Push Binary
+        shell: pwsh
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add lunaridle_project/workflow/windows/lunar_idle_x86_64.exe
+          git status
+          
+          # Verifica se há alterações para commitar
+          $gitStatus = git status --porcelain
+          if (-not [string]::IsNullOrEmpty($gitStatus)) {
+            git commit -m "chore: update automated windows build binary [skip ci]"
+            git push
+            Write-Host "Binário enviado com sucesso para o repositório!"
+          } else {
+            Write-Host "Nenhuma alteração detectada para commit."
+          }
