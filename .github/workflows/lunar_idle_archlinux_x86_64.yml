@@ -1,4 +1,4 @@
-name: lunar_idle archlinux(x86_64)
+name: lunar_idle_archlinux(x86_64:v2)
 
 on:
   push:
@@ -10,28 +10,36 @@ permissions:
   contents: write
 
 jobs:
-  build-archlinux:
-    name: Build for Arch Linux (x86_64)
-    runs-on: archlinux-latest
+  build-archlinux-global:
+    name: Build for Arch Linux (x86_64) - Global
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
 
     steps:
+      - name: Install system dependencies (git, python, base-devel)
+        run: |
+          pacman -Syu --noconfirm git python python-pip base-devel
+
+      - name: Mark workspace safe for git
+        run: |
+          git config --global --add safe.directory /__w/lunar_idle/lunar_idle
+          git config --global --add safe.directory /__/_/lunar_idle/lunar_idle
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12.3'
-          cache: ''
+      - name: Set up Python dependencies
+        run: |
+          pip install --no-cache-dir --break-system-packages customtkinter pyinstaller
 
       - name: Build Arch Linux x86_64
         run: |
-          pip install customtkinter pyinstaller
           python3 -m PyInstaller lunaridle_project/build/lunar_idle.spec --distpath dist --workpath build
 
       - name: Organize Artifacts
         run: |
-          TARGET_DIR="lunaridle_project/workflow/archlinux"
+          TARGET_DIR="lunaridle_project/workflow/global"
           mkdir -p "$TARGET_DIR"
           
           if [ -f "dist/lunar_idle" ]; then
@@ -49,17 +57,19 @@ jobs:
 
       - name: Commit and Push Binary
         run: |
+          git config --global --add safe.directory /__w/lunar_idle/lunar_idle
+          git config --global --add safe.directory /__/_/lunar_idle/lunar_idle
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          git add lunaridle_project/workflow/archlinux/lunar_idle_archlinux_x86_64
+          git add lunaridle_project/workflow/global/lunar_idle_archlinux_x86_64
           git status
           
           GIT_STATUS=$(git status --porcelain)
           if [ -n "$GIT_STATUS" ]; then
-            git commit -m "chore: update automated archlinux build binary [skip ci]"
+            git commit -m "chore: update automated archlinux global build binary [skip ci]"
             git push
-            echo "Binário do Arch Linux enviado com sucesso para o repositório!"
+            echo "Binário global do Arch Linux enviado com sucesso!"
           else
             echo "Nenhuma alteração detectada para commit."
           fi
