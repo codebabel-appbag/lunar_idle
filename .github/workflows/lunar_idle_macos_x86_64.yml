@@ -1,0 +1,64 @@
+name: Build Lunar IDE macOS Intel(x86_64)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    name: Build for macOS (x86_64)
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.3'
+          cache: ''
+
+      - name: Build macOS x86_64
+        run: |
+          pip install customtkinter pyinstaller
+          python3 -m PyInstaller lunaridle_project/build/lunar_idle.spec --distpath dist --workpath build
+
+      - name: Organize Artifacts
+        run: |
+          TARGET_DIR="lunaridle_project/workflow/macos"
+          mkdir -p "$TARGET_DIR"
+          
+          if [ -f "dist/lunar_idle" ]; then
+            cp "dist/lunar_idle" "$TARGET_DIR/lunar_idle_x86_64"
+            chmod +x "$TARGET_DIR/lunar_idle_x86_64"
+            echo "Copiado com sucesso para $TARGET_DIR/lunar_idle_x86_64"
+          elif [ -d "dist/lunar_idle.app" ]; then
+            cp -R "dist/lunar_idle.app" "$TARGET_DIR/"
+            echo "App copiado para $TARGET_DIR/"
+          else
+            echo "Erro crítico: Binário ou app não encontrado na pasta dist."
+            exit 1
+          fi
+
+      - name: Commit and Push Binary
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add lunaridle_project/workflow/macos/
+          git status
+          
+          GIT_STATUS=$(git status --porcelain)
+          if [ -n "$GIT_STATUS" ]; then
+            git commit -m "chore: update automated macos intel build binary [skip ci]"
+            git push
+            echo "Binário do macOS enviado com sucesso para o repositório!"
+          else
+            echo "Nenhuma alteração detectada para commit."
+          fi
