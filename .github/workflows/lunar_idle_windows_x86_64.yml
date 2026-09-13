@@ -1,0 +1,40 @@
+name: Build Lunar IDE for Windows
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build for Windows (x86_64)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.3'
+          cache: ''
+
+      - name: Build Windows x86_64
+        run: |
+          pip install customtkinter pyinstaller
+          pyinstaller lunaridle_project/build/lunar_idle.spec
+
+      - name: Organize Artifacts
+        shell: bash
+        run: |
+          TARGET_DIR="lunaridle_project/workflow/windows"
+          mkdir -p "$TARGET_DIR"
+          mv dist/lunar_idle.exe "$TARGET_DIR/lunar_idle_x86_64.exe"
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lunar-ide-windows-x86_64
+          path: lunaridle_project/workflow/windows/
