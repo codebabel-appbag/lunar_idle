@@ -126,13 +126,6 @@ jobs:
         if: matrix.system == 'raspberry'
         uses: docker/setup-qemu-action@v3
 
-      - name: Set up UPX (Windows & Linux x86_64)
-        if: matrix.system != 'macos' && matrix.arch == 'x86_64'
-        uses: crazy-max/ghaction-upx@v4
-        with:
-          version: '4.2.2'
-          install-only: true
-
       # Build: Windows
       - name: Build Windows x86_64
         if: matrix.system == 'windows'
