@@ -1,4 +1,4 @@
-name: lunar_idle_fedora(x86_64:r)
+name: lunar_idle_fedora(x86_64:v3)
 
 on:
   push:
@@ -17,6 +17,11 @@ jobs:
       image: fedora:latest
 
     steps:
+      - name: Mark workspace safe for git
+        run: |
+          git config --global --add safe.directory /__w/lunar_idle/lunar_idle
+          git config --global --add safe.directory /__/_/lunar_idle/lunar_idle
+
       - name: Install system dependencies
         run: |
           dnf install -y python3 python3-pip git gcc binutils redhat-rpm-config
@@ -52,7 +57,8 @@ jobs:
 
       - name: Commit and Push Binary
         run: |
-          git config --global --add safe.directory /__/_/$(basename $GITHUB_REPOSITORY)/$(basename $GITHUB_REPOSITORY) || git config --global --add safe.directory '*'
+          git config --global --add safe.directory /__w/lunar_idle/lunar_idle
+          git config --global --add safe.directory /__/_/lunar_idle/lunar_idle
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
