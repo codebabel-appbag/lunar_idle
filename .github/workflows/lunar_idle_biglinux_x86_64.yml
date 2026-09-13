@@ -12,7 +12,7 @@ permissions:
 jobs:
   build-biglinux:
     name: Build for BigLinux (x86_64)
-    runs-on: ubuntu-latest
+    runs-on: biglinux-latest
 
     steps:
       - name: Checkout repository
