@@ -1,4 +1,4 @@
-name: @lunar_idle fedora(x86_64)
+name: lunar_idle fedora(x86_64:z)
 
 on:
   push:
