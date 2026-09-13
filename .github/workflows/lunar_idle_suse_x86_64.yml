@@ -1,0 +1,76 @@
+name: lunar_idle_suse(x86_64)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-suse-global:
+    name: Build for SUSE (x86_64) - Global
+    runs-on: ubuntu-latest
+    container:
+      image: opensuse/leap:latest
+
+    steps:
+      - name: Install system dependencies (git, python, development tools)
+        run: |
+          zypper --non-interactive refresh
+          zypper --non-interactive install -y git python3 python3-pip python3-devel patterns-base-devel_basis
+
+      - name: Mark workspace safe for git
+        run: |
+          git config --global --add safe.directory /__w/lunar_idle/lunar_idle
+          git config --global --add safe.directory /__/_/lunar_idle/lunar_idle
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python dependencies
+        run: |
+          pip3 install --no-cache-dir customtkinter pyinstaller
+
+      - name: Build SUSE x86_64
+        run: |
+          python3 -m PyInstaller lunaridle_project/build/lunar_idle.spec --distpath dist --workpath build
+
+      - name: Organize Artifacts
+        run: |
+          TARGET_DIR="lunaridle_project/workflow/global"
+          mkdir -p "$TARGET_DIR"
+          
+          if [ -f "dist/lunar_idle" ]; then
+            cp "dist/lunar_idle" "$TARGET_DIR/lunar_idle_suse_x86_64"
+            chmod +x "$TARGET_DIR/lunar_idle_suse_x86_64"
+            echo "Copiado com sucesso para $TARGET_DIR/lunar_idle_suse_x86_64"
+          elif [ -f "dist/lunar_idle.bin" ]; then
+            cp "dist/lunar_idle.bin" "$TARGET_DIR/lunar_idle_suse_x86_64"
+            chmod +x "$TARGET_DIR/lunar_idle_suse_x86_64"
+            echo "Copiado com sucesso para $TARGET_DIR/lunar_idle_suse_x86_64"
+          else
+            echo "Erro crítico: Binário não encontrado na pasta dist."
+            exit 1
+          fi
+
+      - name: Commit and Push Binary
+        run: |
+          git config --global --add safe.directory /__w/lunar_idle/lunar_idle
+          git config --global --add safe.directory /__/_/lunar_idle/lunar_idle
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add lunaridle_project/workflow/global/lunar_idle_suse_x86_64
+          git status
+          
+          GIT_STATUS=$(git status --porcelain)
+          if [ -n "$GIT_STATUS" ]; then
+            git commit -m "chore: update automated suse global build binary [skip ci]"
+            git push
+            echo "Binário global do SUSE enviado com sucesso!"
+          else
+            echo "Nenhuma alteração detectada para commit."
+          fi
